@@ -34,8 +34,8 @@ jobs:
       uses: docker/login-action@v1
       with:
         registry: ghcr.io
-        username: kbstci
-        password: ${{ secrets.DOCKER_AUTH }}
+        username: somedummyusername
+        password: somewrongpassword
 
     - name: Build image
       if: startsWith(github.ref, 'refs/tags/v') == false
