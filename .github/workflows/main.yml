@@ -12,6 +12,7 @@ jobs:
       main-working-dir: "main"
       kind-working-dir: "kind"
       kind-git-ref: "9a2fea6909c44421b902661b21d054ccc1d54db7"
+      IMAGE_NAME: "ghcr.io/${{ github.repository_owner }}/kind-eks-d"
 
     steps:
     - name: Checkout
@@ -34,7 +35,7 @@ jobs:
       uses: docker/login-action@v1
       with:
         registry: ghcr.io
-        username: ederst
+        username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build image
