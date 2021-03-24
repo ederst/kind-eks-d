@@ -15,6 +15,7 @@ update-src:
 	rm -f kubernetes-src.tar.gz
 
 build-image:
+	docker --version
 	kind --version
 	cd kubernetes-src; \
 	KUBE_GIT_VERSION=${VERSION} kind build node-image --image ${TEST_IMAGE} --kube-root .
