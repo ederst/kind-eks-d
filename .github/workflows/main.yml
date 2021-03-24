@@ -5,16 +5,27 @@ on: push
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      main-working-dir: "main"
+      kind-working-dir: "kind"
+      kind-git-ref: "9a2fea6909c44421b902661b21d054ccc1d54db7"
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v1
-
-    - name: Get kind binary
-      uses: engineerd/setup-kind@v0.5.0
+      uses: actions/checkout@v2
       with:
-        version: "v0.9.0"
-        skipClusterCreation: "true"
+        path: ${{ env.main-working-dir }}
+
+    - name: Checkout kind
+      uses: actions/checkout@v2
+      with:
+        repository: kubernetes-sigs/kind
+        path: ${{ env.kind-working-dir }}
+        ref: ${{ env.kind-git-ref }}
+
+    - name: Build kind
+      run: sudo make install INSTALL_DIR=/usr/local/bin
+      working-directory: ${{ env.kind-working-dir }}
 
     - name: Docker login
       run: |
@@ -23,20 +34,25 @@ jobs:
     - name: Build image
       if: startsWith(github.ref, 'refs/tags/v') == false
       run: make build-image
+      working-directory: ${{ env.main-working-dir }}
 
     - name: Pull image
       if: startsWith(github.ref, 'refs/tags/v')
       run: make pull-image
+      working-directory: ${{ env.main-working-dir }}
 
     - name: Test image
       run: make test-image
+      working-directory: ${{ env.main-working-dir }}
 
     - name: Push image
       if: startsWith(github.ref, 'refs/tags/v') == false
       run: |
         make push-image
+      working-directory: ${{ env.main-working-dir }}
 
     - name: Promote image
       if: startsWith(github.ref, 'refs/tags/v')
       run: |
         make promote-image GITHUB_REF=$GITHUB_REF
+      working-directory: ${{ env.main-working-dir }}
