@@ -20,16 +20,21 @@ jobs:
       #with:
       #  path: ${{ env.main-working-dir }}
 
-    - name: Checkout kind
-      uses: actions/checkout@v2
-      with:
-        repository: kubernetes-sigs/kind
-        path: ${{ env.kind-working-dir }}
-        ref: ${{ env.kind-git-ref }}
+    #- name: Checkout kind
+    #  uses: actions/checkout@v2
+    #  with:
+    #    repository: kubernetes-sigs/kind
+    #    path: ${{ env.kind-working-dir }}
+    #    ref: ${{ env.kind-git-ref }}
 
-    - name: Build kind
-      run: sudo make install INSTALL_DIR=/usr/local/bin
-      working-directory: ${{ env.kind-working-dir }}
+    #- name: Build kind
+    #  run: sudo make install INSTALL_DIR=/usr/local/bin
+    #  working-directory: ${{ env.kind-working-dir }}
+
+    - name: Install kind
+      run: |
+        sudo curl -L https://github.com/ederst/kind-eks-d/releases/download/kind-0.11.0/kind -o /usr/local/bin/kind
+        chmod +x /usr/local/bin/kind
 
     - name: Docker login
       uses: docker/login-action@v1
